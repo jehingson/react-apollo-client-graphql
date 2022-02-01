@@ -43,8 +43,9 @@ const DeletePostContent = styled.div`
   background-color: rgba(0, 0, 0, 0.8);
   z-index: 100;
   >div{
-    min-width:600px;
+    max-width:600px;
     min-height: 200px;
+    width: 100%;
     padding: 30px;
     background-color: white;
     display:flex;

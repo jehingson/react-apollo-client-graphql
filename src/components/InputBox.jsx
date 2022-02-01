@@ -20,14 +20,14 @@ const validationsForm = (form) => {
   if (!form.title.trim()) {
     errors.title = "El titulo es requerido"
   }
-  if (!form.title.trim() > 50) {
+  if (form.title.trim().length > 50) {
     errors.title = "Titulo debe ser menor a 50 caracteres"
   }
 
   if (!form.description.trim()) {
     errors.description = "La descripción es requerida"
   }
-  if (!form.description.trim() > 240) {
+  if (form.description.trim().length > 240) {
     errors.description = "Descripción debe ser menor de 240 caracteres"
   }
   return errors
@@ -126,7 +126,6 @@ function InputBox() {
 export default InputBox;
 
 const InputBoxContainer = styled.div`
-
 background: #0B1924;
   border-radius: .25rem;
   position: relative;

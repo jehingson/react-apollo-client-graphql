@@ -18,7 +18,7 @@ function PostDetail({
 }) {
   const { users } = useContext(Context)
   const [fetchDelete, setFetchDelete] = useState(false)
-
+  const [fetchUpdate, setFetchUpdate] = useState(false)
 
   return <PostContent>
   {fetchDelete &&
@@ -27,9 +27,20 @@ function PostDetail({
    setFetchDelete={setFetchDelete}
      
    />}
+   {
+     fetchUpdate && <UpdatePost 
+       id={id}
+       title={title}
+       description={description}
+       setFetchUpdate={setFetchUpdate}
+     />
+   }
     <div className="author">
     {users.uid === uid  && <div className="icons-action">
-        <PencilAltIcon  className="update" />
+        <PencilAltIcon  
+        className="update" 
+        onClick={() => setFetchUpdate(true)}
+        />
         <TrashIcon 
         className="delite" 
         onClick={()=> setFetchDelete(true)}
