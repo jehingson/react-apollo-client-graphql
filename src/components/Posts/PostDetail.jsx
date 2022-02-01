@@ -60,7 +60,6 @@ export default PostDetail;
 
 const PostContent = styled.div`
 display: flex;
-Z-index: -100;
 padding: 10px;
 margin: 10px;
 background-color: #0B1924;
@@ -69,7 +68,6 @@ justify-content: center;
 align-items: center;
 box-shadow: 0 3px 10px rgb(0 0 10px / 0.5);
 border-radius: .25rem;
-position: relative;
 .icons-action{
    display: flex;
    z-index: 9999;

@@ -1,10 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { EmojiHappyIcon } from "@heroicons/react/outline";
 import { CameraIcon, VideoCameraIcon } from "@heroicons/react/solid";
 import { Notify } from './Notify';
 import { useFormAddPost } from '../hooks/useFormAddPost';
-
+import Loading from './Loading';
+import { UPLOAD_FILE } from '../graphql/mutations';
+import { useMutation } from '@apollo/client';
 
 
 const initialForm = {
@@ -15,7 +17,6 @@ const initialForm = {
 
 const validationsForm = (form) => {
   let errors = {};
-
   if (!form.title.trim()) {
     errors.title = "El titulo es requerido"
   }
@@ -29,13 +30,14 @@ const validationsForm = (form) => {
   if (!form.description.trim() > 240) {
     errors.description = "Descripción debe ser menor de 240 caracteres"
   }
-
   return errors
 }
 
 
 
 function InputBox() {
+  const [images, setImages] = useState(false)
+  const [loading, setLoading] = useState(false)
   const {
     form,
     handleChange,
@@ -44,14 +46,33 @@ function InputBox() {
     errorsMessage,
     completeMessage,
     errors,
-    loading,
   } = useFormAddPost(initialForm, validationsForm)
+
+
+  const [uploadImages] = useMutation(UPLOAD_FILE, {
+    onCompleted: (data) => { console.log('data', data) },
+    onError: (error) => { console.log('errpr', error.graphQLErrors[0])}
+  })
+
+
+  const hendleUpload =  ({
+    target: {
+      validity,
+      files: [file],
+    },
+  }) => {
+    
+    if (validity.valid) uploadImages({ variables: { file } });
+  }
+  const removeImage = () => {
+    setImages(null)
+  }
 
   return <InputBoxContainer>
     <div className="top-box">
       <Notify errorsMessage={errorsMessage} completeMessage={completeMessage} />
       <img src="https://images.unsplash.com/photo-1521575107034-e0fa0b594529?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8cG9zdCUyMGJveHxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=1000&q=60" a alt="" />
-    
+
       <form onSubmit={handleSubmit}>
         <input
           placeholder="Escribe el titulo de tu publicación"
@@ -62,7 +83,7 @@ function InputBox() {
           onChange={handleChange}
           onBlur={handleBlur}
         />
-          {errors.title && <p className="error input">{errors.title}</p>}
+        {errors.title && <p className="error input">{errors.title}</p>}
         <textarea
           placeholder="Escribe la description de tu publicacion"
           type="text"
@@ -71,13 +92,14 @@ function InputBox() {
           onChange={handleChange}
           onBlur={handleBlur}
         />
-         {errors.description && <p className="error text">{errors.description}</p>}
+        {errors.description && <p className="error text">{errors.description}</p>}
         <button type="submit">Publicar</button>
       </form>
     </div>
     <div className="box-footer">
       <div className="inputIcon">
         <CameraIcon className="photo" />
+        <input type="file" name="file" id="file-up" onChange={hendleUpload} />
         <p>Fotos</p>
       </div>
       <div className="inputIcon">
@@ -89,11 +111,14 @@ function InputBox() {
         <p>Sentimientos/actividad</p>
       </div>
     </div>
-    <div className="image-create">
-      <p className="remove">Remove</p>
-      <img className="h-10 object-contain" src="https://images.unsplash.com/photo-1521575107034-e0fa0b594529?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8cG9zdCUyMGJveHxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=1000&q=60" alt="" />
-
-    </div>
+    {
+      images && <div className="image-create">
+        <p className="remove" onclick={removeImage}>Remove</p>
+        <img className="h-10 object-contain" src={images} alt="" />
+      </div>
+    }{
+      loading && <div><Loading /></div>
+    }
 
   </InputBoxContainer>;
 }
@@ -101,14 +126,14 @@ function InputBox() {
 export default InputBox;
 
 const InputBoxContainer = styled.div`
-  background: #0B1924;
+
+background: #0B1924;
   border-radius: .25rem;
   position: relative;
   color: #fff;
   margin-top: 20px;
   padding: 0px 15px 5px 0;
   box-shadow: rgba(0, 0, 0, 0.2) 0px 1px 2px 0px;
-  Z-index: -10;
   .top-box{
     display: flex;
     padding: 20px 0;
@@ -125,8 +150,8 @@ const InputBoxContainer = styled.div`
       margin-top: -5px;
       margin-left: -10px;
     }
-   
     >form{
+      z-index:0;
       box-sizing: border-box;
       margin-left: 20px;
       width: 70%;
@@ -134,8 +159,6 @@ const InputBoxContainer = styled.div`
       align-items: center;
       flex-direction: column;
       position: relative;
-      
-      Z-index: -1;
       >input, >textarea{
         padding: 15px 20px;
         border: 1px solid #172B3A;
@@ -193,6 +216,7 @@ const InputBoxContainer = styled.div`
     margin: auto;
     align-items: center;
     display: flex;
+    position: relative;
     >div{
       display: flex;
       width: 100%;;
@@ -219,9 +243,19 @@ const InputBoxContainer = styled.div`
         display: none;
        }
      }
+     >input{
+       width: 20px;
+       height: 20px;
+       opacity: 0;
+
+       position: absolute;
+       top: 12px;
+       left: 11px;
+       cursor: pointer;
+       }
+     }
 
     }
-  }
   .image-create{
     width:100%;
     height: 300px;
@@ -246,8 +280,5 @@ const InputBoxContainer = styled.div`
           opacity: .8;
         }
     }
-
   }
-
-
 `

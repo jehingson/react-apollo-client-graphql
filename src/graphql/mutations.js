@@ -27,6 +27,15 @@ mutation login($email: String!, $password: String!) {
 }
 `
 
+export const UPLOAD_FILE = gql`
+mutation uploadImages($file: Upload!){
+  uploadFile(file: $file){
+    url
+  }
+}
+
+`
+
 export const UPDATE_USER = gql`
     mutation {
     updateUser(

@@ -4,8 +4,9 @@ import './index.css'
 import App from './App'
 import { ApolloClient, HttpLink, ApolloLink, InMemoryCache, ApolloProvider, from } from '@apollo/client';
 import Context from './context/Context'
+import { createUploadLink } from 'apollo-upload-client'
 
-const httpLink = new HttpLink({ uri: 'http://localhost:5000/graphql' });
+//const httpLink = new HttpLink({ uri: 'http://localhost:5000/graphql' });
 
 const activityMiddleware = new ApolloLink((operation, forward) => {
   const token = window.sessionStorage.getItem('token')
@@ -24,8 +25,11 @@ const client = new ApolloClient({
   connectToDevTools: true,
   link: from([
     activityMiddleware,
-    httpLink
-  ]),  
+    createUploadLink({
+      uri: 'http://localhost:5000/graphql',
+      fetch
+    })
+  ]),
   onError: err => {
     if (err) {
       window.sessionStorage.removeItem('token')
