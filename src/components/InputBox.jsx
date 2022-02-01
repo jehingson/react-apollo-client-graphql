@@ -7,7 +7,7 @@ import { useFormAddPost } from '../hooks/useFormAddPost';
 import Loading from './Loading';
 import { UPLOAD_FILE } from '../graphql/mutations';
 import { useMutation } from '@apollo/client';
-
+import axios from 'axios'
 
 const initialForm = {
   title: '',
@@ -55,14 +55,24 @@ function InputBox() {
   })
 
 
-  const hendleUpload =  ({
-    target: {
-      validity,
-      files: [file],
-    },
-  }) => {
-    
-    if (validity.valid) uploadImages({ variables: { file } });
+  const hendleUpload =  e => {
+    const file = e.target.files[0]
+    if (!file) return  
+    setLoading(true)
+    if(!file || file.type !== 'image/jpeg' || file.type !== 'image/png'){
+      setTimeout(() => {
+        alert('Error en el archivo o formato')
+        setLoading(false)
+      },2000)
+    }else{
+      const formData = new FormData()
+      formData.append("file", file)
+      formData.append("upload_preset", "bqvu6rdw")
+      axios.post("https://api.cloudinary.com/v1_1/jehingson/image/upload", formData).then((res) =>{
+        setImages(res.data.url)
+        setLoading(false)
+      }).catch((err) => {setLoading(false)}) 
+    }
   }
   const removeImage = () => {
     setImages(null)
@@ -113,7 +123,7 @@ function InputBox() {
     </div>
     {
       images && <div className="image-create">
-        <p className="remove" onclick={removeImage}>Remove</p>
+        <p className="remove" onClick={removeImage}>Remove</p>
         <img className="h-10 object-contain" src={images} alt="" />
       </div>
     }{
