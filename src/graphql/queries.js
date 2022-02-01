@@ -17,3 +17,14 @@ export const All_POST = gql`
   }
   }
 `
+
+export const FETCH_POST = gql`
+ query {
+   fetchUser{
+        uid
+        username
+        photo
+        email
+      }
+  }
+`

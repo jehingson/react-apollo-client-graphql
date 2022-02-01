@@ -35,13 +35,15 @@ mutation uploadImages($file: Upload!){
 }
 `
 export const UPDATE_USER = gql`
-    mutation {
+    mutation updateUser($username: String!, $photo: String!) {
     updateUser(
-    username: "Json dev update"
-    photo: "url/images"
+    username: $username,
+    photo: $photo
   ) {
+    uid
     username
     photo
+    email
   }
 }
 `

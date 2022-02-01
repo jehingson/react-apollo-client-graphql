@@ -19,6 +19,9 @@ const validationsForm = (form) => {
     } else if (!regexName.test(form.name.trim())) {
         errors.name = "El campo nombre y apellido debe ser completo"
     }
+    if (form.name.trim().length >25){
+        "Este campo debe ser menor a 25 caracteres"
+    } 
 
     if (!form.email.trim()) {
         errors.email = "El email es requerido"
