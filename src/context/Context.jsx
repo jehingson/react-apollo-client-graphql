@@ -25,6 +25,9 @@ const Provider = ({ children }) => {
             window.sessionStorage.setItem('user', JSON.stringify(user))
             window.sessionStorage.setItem('token', user.token)
         },
+        localUser:  (user) =>{
+            window.sessionStorage.setItem('user', JSON.stringify(user))
+        },
         removeAuth: () => {
             setIsAuth(false)
             window.sessionStorage.removeItem('user')

@@ -4,21 +4,25 @@ import { Context } from '../context/Context';
 import axios from 'axios'
 import { UPDATE_USER } from '../graphql/mutations';
 import { useMutation, useQuery } from '@apollo/client';
-import { All_POST, FETCH_POST } from '../graphql/queries';
+import { All_POST, FETCH_USER } from '../graphql/queries';
 
 
 function Profile() {
-  const { removeAuth } = useContext(Context)
+  const { removeAuth, localUser } = useContext(Context)
   const [updateUser] = useMutation(UPDATE_USER, {
-    refetchQueries: [{ query: All_POST }, {query: FETCH_POST }], 
+    refetchQueries: [{ query: All_POST }, {query: FETCH_USER }], 
+    onCompleted: (data) => {
+      console.log('data', data)
+      localUser(data)
+    }
   })
   
 
-  const {data, error, loading }= useQuery(FETCH_POST)
-  if (loading) return null;
+  const {data, error, loading }= useQuery(FETCH_USER)
+  if(loading) return null;
   if(error) return null
   const {fetchUser} = data
-
+  localUser(fetchUser)
 
   const hendleUpload = e => {
     const file = e.target.files[0]
@@ -29,7 +33,6 @@ function Profile() {
     axios.post("https://api.cloudinary.com/v1_1/jehingson/image/upload", formData).then((res) => {
       updateUser({ variables: { username: fetchUser.username, photo: res.data.url } })
     }).catch((err) => {
-      console.log('err', err)
       alert('Error archivo o formato incorrecto!')
     })
   }

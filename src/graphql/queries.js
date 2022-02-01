@@ -18,7 +18,7 @@ export const All_POST = gql`
   }
 `
 
-export const FETCH_POST = gql`
+export const FETCH_USER = gql`
  query {
    fetchUser{
         uid
