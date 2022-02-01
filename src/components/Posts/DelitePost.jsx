@@ -5,34 +5,17 @@ import { DELETE_POST } from '../../graphql/mutations';
 import { All_POST } from '../../graphql/queries';
 
 
-function DelitePost({ id }) {
+function DelitePost({ id, setFetchDelete }) {
 
   const [deletePost] = useMutation(DELETE_POST, {
     refetchQueries: [{ query: All_POST }],
     onCompleted: (data) => {
-      setFetchDelete(false)
         setFetchDelete(false)
-      notifyCompled('Publicacion eliminada con éxito')
     },
     onError: (error) => {
-      notifyErrors('Error con esta peticion, intentelo nuevamenta mas tarde!');
+      alert('Error con esta peticion, intentelo nuevamenta mas tarde!');
     }
   })
-
-  const notifyCompled = message => {
-    setCompledMessage(message)
-    setTimeout(() => {
-      setCompledMessage(null)
-    }, 3000)
-  }
-  const notifyErrors = message => {
-    setErrosMessage(message)
-    setTimeout(() => {
-      setErrosMessage(null)
-    }, 3000)
-  }
-
-
   const handleDelete = () => {
     deletePost({ variables: { id } })
   }
