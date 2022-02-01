@@ -23,6 +23,7 @@ const NotifyContent = styled.div`
     background-color: #F1A5A2;
     color: #F9E6E6;
     border-radius: .25rem;
+    z-index: 99;
 `
 const NotifyContentComplete = styled.div`
     max-width: 500px;

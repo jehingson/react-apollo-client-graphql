@@ -18,7 +18,6 @@ export default Feed;
 
 const FeedContent = styled.div`
 flex: .5;
-border: 2px solid blue;
 margin: auto;
 overflow-y: auto;
 @media(max-width: 1000px){

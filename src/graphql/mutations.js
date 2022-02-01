@@ -20,6 +20,9 @@ mutation login($email: String!, $password: String!) {
     password: $password) {
     token
     uid
+    username
+    photo
+    email
   }
 }
 `
@@ -37,12 +40,13 @@ export const UPDATE_USER = gql`
 `
 
 export const ADD_POST = gql`
-mutation {
+mutation createPost($title: String!, $description: String!, $image: String!){
   addPost(
-    title: "Node.js"
-    description: "Node developer tools"
-    image: "https://images"
+    title: $title,
+    description: $description,
+    image: $image
   ) {
+    id
     title
     description
     image

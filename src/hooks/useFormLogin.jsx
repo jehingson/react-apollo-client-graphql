@@ -3,6 +3,7 @@ import { useContext, useState } from 'react';
 import { Context } from '../context/Context';
 import { CREATE_USER, LOGIN } from '../graphql/mutations'
 
+
 const initialFormValue = {
     name: '',
     email: '',
@@ -46,8 +47,8 @@ export const useFormLogin = (initialForm, validateFrom, register) => {
 
     const [login] = useMutation(LOGIN, {
         onCompleted: (data) => {
-            console.log('data',data)
-            activateAuth(data.signIn.token, data.signIn.uid)
+            const user = data.signIn
+            activateAuth({...user})
         },
         onError: (error) => {
             notifyErrors(error.graphQLErrors[0].message)
