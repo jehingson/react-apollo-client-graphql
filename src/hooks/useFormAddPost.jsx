@@ -9,7 +9,7 @@ const initialFormValue = {
     image: ''
 }
 
-export const useFormAddPost = (initialForm, validateFrom) => {
+export const useFormAddPost = (initialForm, validateFrom, images, setImages) => {
     const [form, setForm] = useState(initialForm);
     const [errors, setErrors] = useState({});
     const [loading, setLoading] = useState(false)
@@ -31,6 +31,7 @@ export const useFormAddPost = (initialForm, validateFrom) => {
     const notifyCompled = message => {
         setCompledMessage(message)
         setForm(initialFormValue)
+        setImages(null)
         setTimeout(() => {
             setCompledMessage(null)
         }, 3000)
@@ -61,7 +62,7 @@ export const useFormAddPost = (initialForm, validateFrom) => {
                     variables: {
                         title: form.title,
                         description: form.description,
-                        image: form.image
+                        image: images ? images : ''
                     }
                 })
             setTimeout(() => {

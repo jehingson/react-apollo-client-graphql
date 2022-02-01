@@ -1,13 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import styled from 'styled-components';
 import { EmojiHappyIcon } from "@heroicons/react/outline";
 import { CameraIcon, VideoCameraIcon } from "@heroicons/react/solid";
 import { Notify } from './Notify';
 import { useFormAddPost } from '../hooks/useFormAddPost';
 import Loading from './Loading';
-import { UPLOAD_FILE } from '../graphql/mutations';
-import { useMutation } from '@apollo/client';
 import axios from 'axios'
+import { Context } from '../context/Context';
+
 
 const initialForm = {
   title: '',
@@ -34,8 +34,8 @@ const validationsForm = (form) => {
 }
 
 
-
 function InputBox() {
+  const { users } = useContext(Context)
   const [images, setImages] = useState(false)
   const [loading, setLoading] = useState(false)
   const {
@@ -46,34 +46,25 @@ function InputBox() {
     errorsMessage,
     completeMessage,
     errors,
-  } = useFormAddPost(initialForm, validationsForm)
+  } = useFormAddPost(initialForm, validationsForm, images, setImages)
 
-
-  const [uploadImages] = useMutation(UPLOAD_FILE, {
-    onCompleted: (data) => { console.log('data', data) },
-    onError: (error) => { console.log('errpr', error.graphQLErrors[0])}
-  })
-
-
-  const hendleUpload =  e => {
+  const hendleUpload = e => {
     const file = e.target.files[0]
-    if (!file) return  
+    if (!file) return
     setLoading(true)
-    if(!file || file.type !== 'image/jpeg' || file.type !== 'image/png'){
-      setTimeout(() => {
-        alert('Error en el archivo o formato')
-        setLoading(false)
-      },2000)
-    }else{
-      const formData = new FormData()
-      formData.append("file", file)
-      formData.append("upload_preset", "bqvu6rdw")
-      axios.post("https://api.cloudinary.com/v1_1/jehingson/image/upload", formData).then((res) =>{
-        setImages(res.data.url)
-        setLoading(false)
-      }).catch((err) => {setLoading(false)}) 
-    }
+    const formData = new FormData()
+    formData.append("file", file) 
+    formData.append("upload_preset", "bqvu6rdw")
+    axios.post("https://api.cloudinary.com/v1_1/jehingson/image/upload", formData).then((res) => {
+      console.log('res', res.data)
+      setImages(res.data.url)
+      setLoading(false)
+    }).catch((err) => {
+      alert('Error archivo o formato incorrecto!')
+      setLoading(false)
+    })
   }
+
   const removeImage = () => {
     setImages(null)
   }
@@ -81,8 +72,7 @@ function InputBox() {
   return <InputBoxContainer>
     <div className="top-box">
       <Notify errorsMessage={errorsMessage} completeMessage={completeMessage} />
-      <img src="https://images.unsplash.com/photo-1521575107034-e0fa0b594529?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8cG9zdCUyMGJveHxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=1000&q=60" a alt="" />
-
+      <img src={users.photo ? users.photo : 'https://cdn.icon-icons.com/icons2/827/PNG/128/user_icon-icons.com_66546.png' }  alt="" />
       <form onSubmit={handleSubmit}>
         <input
           placeholder="Escribe el titulo de tu publicación"
@@ -215,7 +205,6 @@ background: #0B1924;
         &.text{
           bottom: 23px;
           left: 0;
-
         }
       }
      

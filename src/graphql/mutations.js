@@ -33,9 +33,7 @@ mutation uploadImages($file: Upload!){
     url
   }
 }
-
 `
-
 export const UPDATE_USER = gql`
     mutation {
     updateUser(
@@ -63,9 +61,9 @@ mutation createPost($title: String!, $description: String!, $image: String!){
 }
 `
 
-export const UPDATE_POST =gql`
-mutation {
-  updatePost(id: 9, title: "hola", description: "munco") {
+export const UPDATE_POST = gql`
+mutation postUpdate($id: Int!, $title: String!, $description: String!) {
+  updatePost(id: $id, title: $title, description: $description) {
     id
     description
     title
@@ -73,9 +71,9 @@ mutation {
 }
 `
 
-export const DELETE_POST =gql`
-mutation {
-  deletePost(id: 2) {
+export const DELETE_POST = gql`
+mutation deletePost($id: Int!) {
+  deletePost(id: $id) {
   id
   }
 }

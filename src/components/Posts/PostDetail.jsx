@@ -1,58 +1,65 @@
-import React from 'react';
+import React, { useContext, useState } from 'react';
 import styled from 'styled-components';
-import { ChatAltIcon, ShareIcon, ThumbUpIcon, PencilAltIcon, TrashIcon} from "@heroicons/react/outline"
+import { ChatAltIcon, ShareIcon, ThumbUpIcon, PencilAltIcon, TrashIcon } from "@heroicons/react/outline"
 import UpdatePost from './UpdatePost';
 import DelitePost from './DelitePost';
-
+import { Context } from '../../context/Context';
 
 
 function PostDetail({
+  id,
   title,
   description,
-  id,
   image,
   author,
   photo,
   uid,
   createdAt
 }) {
-
+  const { users } = useContext(Context)
+  const [fetchDelete, setFetchDelete] = useState(false)
 
 
   return <PostContent>
-   
-  <div className="author">
-  <div className="icons-action">
-      <PencilAltIcon className="update" />
-      <TrashIcon className="delite" />
-  </div>
- 
-    <div>
-      <img src={ photo ? photo : "https://cdn.pixabay.com/photo/2021/08/25/20/42/field-6574455__340.jpg" } alt={title} />
+  {fetchDelete &&
+    <DelitePost 
+   id={id} 
+   setFetchDelete={setFetchDelete}
+     
+   />}
+    <div className="author">
+    {users.uid === uid  && <div className="icons-action">
+        <PencilAltIcon  className="update" />
+        <TrashIcon 
+        className="delite" 
+        onClick={()=> setFetchDelete(true)}
+        />
+      </div> }
+      
       <div>
-        <p>{author}</p>
-        <p>{new Date(createdAt).toLocaleString()}</p>
-     
+        <img src={photo ? photo : "https://cdn.icon-icons.com/icons2/827/PNG/128/user_icon-icons.com_66546.png"} alt={title} />
+        <div>
+          <p>{author}</p>
+          <p>{new Date(createdAt).toLocaleString()}</p>
+        </div>
       </div>
-     
+      <p> <b>{title}</b> <br />{description}</p>
     </div>
-    <p>{description}</p>
-  </div>
-  { image && (<div className="image"><img src="https://cdn.pixabay.com/photo/2021/08/25/20/42/field-6574455__340.jpg" alt="" /></div>)}
-  <div className="footer">
-    <div className="icons">
-    <ThumbUpIcon className="h-4" />
-    <p>Me gusta</p>
+    {image && (<div className="image"><img src={image} alt="" /></div>)}
+    <div className="footer">
+      <div className="icons">
+        <ThumbUpIcon className="h-4" />
+        <p>Me gusta</p>
+      </div>
+      <div className="icons">
+        <ChatAltIcon className="h-4" />
+        <p>Comentarios</p>
+      </div>
+      <div className="icons">
+        <ShareIcon className="h-4" />
+        <p>compartir</p>
+      </div>
     </div>
-    <div className="icons">
-    <ChatAltIcon className="h-4" />
-    <p>Comentarios</p>
-    </div>
-    <div className="icons">
-    <ShareIcon className="h-4" />
-    <p>compartir</p>
-    </div>
-  </div>
   </PostContent>;
 }
 
@@ -70,7 +77,6 @@ box-shadow: 0 3px 10px rgb(0 0 10px / 0.5);
 border-radius: .25rem;
 .icons-action{
    display: flex;
-   z-index: 9999;
    top: 5px;
    right: 0;
    position: absolute;

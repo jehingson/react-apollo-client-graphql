@@ -6,13 +6,12 @@ import PostDetail from './PostDetail';
 
 function Posts() {
   const { data, error, loading } = useQuery(All_POST)
-
   if (error) return null
   return <div>
     {
       data && data.allPost?.map(post => <PostDetail 
           key={post.id}
-          title={post.user}
+          title={post.title}
           description={post.description}
           id={post.id}
           image={post.image}
