@@ -26,8 +26,9 @@ margin: auto;
 display: flex;
 flex: 1;
 
-@media(max-width: 615px){
+@media(max-width: 800px){
   flex-direction: column;
+  position: relative;
 }
 `
  

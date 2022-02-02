@@ -19,10 +19,7 @@ const Provider = ({ children }) => {
             setIsAuth(false)
             setUser({})
             window.sessionStorage.removeItem('token')
-            setTimeout(() => {
-                window.location.reload()
-            }, 1000)
-            
+            window.location.reload()
         }
     }
     return <Context.Provider value={value}>

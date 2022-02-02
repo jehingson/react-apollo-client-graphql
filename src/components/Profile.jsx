@@ -103,7 +103,12 @@ button{
         Background: #1e415b;
     }
 }
-@media(max-width: 615px){
+@media(max-width: 800px){
   flex: 1;
+  position: relative;
+  >div{
+    position: relative;
+    padding: 20px 30px 20xp 50px;
+  }
 }
 `

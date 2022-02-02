@@ -24,10 +24,8 @@ overflow-y: auto;
   flex: .6;
 }
 @media(max-width: 800px){
-  flex: .65;
-}
-@media(max-width: 615px){
   flex: 1;
 }
+
 
 `
