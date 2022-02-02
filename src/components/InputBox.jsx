@@ -7,10 +7,6 @@ import { useFormAddPost } from '../hooks/useFormAddPost';
 import Loading from './Loading';
 import axios from 'axios'
 import { Context } from '../context/Context';
-import { useQuery } from '@apollo/client';
-import { FETCH_USER } from '../graphql/queries';
-
-
 
 
 const initialForm = {
@@ -39,9 +35,10 @@ const validationsForm = (form) => {
 
 
 function InputBox() {
+  const { users } = useContext(Context)
   const [images, setImages] = useState(false)
   const [loading, setLoading] = useState(false)
-
+  
   const {
     form,
     handleChange,
@@ -51,9 +48,6 @@ function InputBox() {
     completeMessage,
     errors,
   } = useFormAddPost(initialForm, validationsForm, images, setImages)
-
-  
-
 
   const hendleUpload = e => {
     const file = e.target.files[0]
@@ -70,16 +64,16 @@ function InputBox() {
       setLoading(false)
     })
   }
+
   const removeImage = () => {
     setImages(null)
   }
-  const {data, error }= useQuery(FETCH_USER)
-  if(error) return null
+
 
   return <InputBoxContainer>
     <div className="top-box">
       <Notify errorsMessage={errorsMessage} completeMessage={completeMessage} />
-      <img src={data && data.fetchUser.photo ? data.fetchUser.photo : 'https://cdn.icon-icons.com/icons2/827/PNG/128/user_icon-icons.com_66546.png'} alt="" />
+      <img src={users.photo ? users.photo : 'https://cdn.icon-icons.com/icons2/827/PNG/128/user_icon-icons.com_66546.png'} alt="" />
       <form onSubmit={handleSubmit}>
         <input
           placeholder="Escribe el titulo de tu publicación"

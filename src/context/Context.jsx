@@ -5,32 +5,19 @@ const Provider = ({ children }) => {
     const [isAuth, setIsAuth] = useState(() => {
         return window.sessionStorage.getItem('token')
     })
-    const [users, setUser] = useState(() => {
-        if(window.sessionStorage.getItem('user')){
-           return JSON.parse(window.sessionStorage.getItem('user'))
-        }
-        return {
-            email: '',
-            photo: '',
-            uid: 0,
-            username: ''
-        }
-    })
+    const [users, setUser] = useState({})
     const value = {
         users,
         isAuth,
         setUser,
         activateAuth: (user) => {
             setIsAuth(true)
-            window.sessionStorage.setItem('user', JSON.stringify(user))
             window.sessionStorage.setItem('token', user.token)
-        },
-        localUser:  (user) =>{
-            window.sessionStorage.setItem('user', JSON.stringify(user))
+            setUser(user)
         },
         removeAuth: () => {
             setIsAuth(false)
-            window.sessionStorage.removeItem('user')
+            setUser({})
             window.sessionStorage.removeItem('token')
             setTimeout(() => {
                 window.location.reload()

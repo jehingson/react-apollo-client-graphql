@@ -8,21 +8,18 @@ import { All_POST, FETCH_USER } from '../graphql/queries';
 
 
 function Profile() {
-  const { removeAuth, localUser } = useContext(Context)
+  const { removeAuth, users, setUser } = useContext(Context)
   const [updateUser] = useMutation(UPDATE_USER, {
     refetchQueries: [{ query: All_POST }, {query: FETCH_USER }], 
     onCompleted: (data) => {
-      console.log('data', data)
-      localUser(data)
+      setUser(data)
     }
   })
-  
 
-  const {data, error, loading }= useQuery(FETCH_USER)
-  if(loading) return null;
-  if(error) return null
-  const {fetchUser} = data
-  localUser(fetchUser)
+  const { data } = useQuery(FETCH_USER)
+  if(data){
+    setUser(data.fetchUser)
+  }
 
   const hendleUpload = e => {
     const file = e.target.files[0]
@@ -31,7 +28,7 @@ function Profile() {
     formData.append("file", file)
     formData.append("upload_preset", "bqvu6rdw")
     axios.post("https://api.cloudinary.com/v1_1/jehingson/image/upload", formData).then((res) => {
-      updateUser({ variables: { username: fetchUser.username, photo: res.data.url } })
+      updateUser({ variables: { username: users.username, photo: res.data.url } })
     }).catch((err) => {
       alert('Error archivo o formato incorrecto!')
     })
@@ -40,13 +37,13 @@ function Profile() {
   return <ProfileContent>
     <div>
       <div>
-        <img src={fetchUser.photo ? fetchUser.photo : "https://cdn.icon-icons.com/icons2/827/PNG/128/user_icon-icons.com_66546.png"} alt="" />
+        <img src={users.photo ? users.photo : "https://cdn.icon-icons.com/icons2/827/PNG/128/user_icon-icons.com_66546.png"} alt="" />
         <button type="button">Editar foto</button>
         <input type="file" name="file" onChange={hendleUpload} />
       </div>
       <br />
-      <h4>{fetchUser.username}</h4>
-      <p><b></b>Email:  {fetchUser.email} </p>
+      <h4>{users.username}</h4>
+      <p><b></b>Email:  {users.email} </p>
       <button onClick={removeAuth} className="session" type="button">Cerrar sesión</button>
     </div>
   </ProfileContent>;

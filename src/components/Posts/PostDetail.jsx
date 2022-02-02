@@ -1,9 +1,8 @@
-import React, { useContext, useState } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { ChatAltIcon, ShareIcon, ThumbUpIcon, PencilAltIcon, TrashIcon } from "@heroicons/react/outline"
 import UpdatePost from './UpdatePost';
 import DelitePost from './DelitePost';
-import { Context } from '../../context/Context';
 
 
 function PostDetail({
@@ -14,9 +13,10 @@ function PostDetail({
   author,
   photo,
   uid,
-  createdAt
+  createdAt,
+  userId
 }) {
-  const { users } = useContext(Context)
+  
   const [fetchDelete, setFetchDelete] = useState(false)
   const [fetchUpdate, setFetchUpdate] = useState(false)
 
@@ -36,7 +36,7 @@ function PostDetail({
      />
    }
     <div className="author">
-    {users.uid === uid  && <div className="icons-action">
+    {userId === uid  && <div className="icons-action">
         <PencilAltIcon  
         className="update" 
         onClick={() => setFetchUpdate(true)}
